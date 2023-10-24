@@ -1,13 +1,13 @@
-import {createGlobalStyle} from "styled-components";
+import styled, {createGlobalStyle} from "styled-components";
 
 export const themeSchema = {
-  ligth: {
+  light: {
     color: "black",
-    backgroundColor: "whitesmoke",
+    bgColor: "darkgray",
   },
   dark: {
     color: "whitesmoke",
-    backgroundColor: "darkblue",
+    bgColor: "darkblue",
   },
 };
 
@@ -59,4 +59,9 @@ a{
 	color:inherit;
 	text-decoration:none;
 }
+`;
+export const Wrapper = styled.div`
+  width: 100%;
+  height: 200vh;
+  padding-top: 80px;
 `;
