@@ -38,6 +38,8 @@ footer, header, hgroup, menu, nav, section {
 	display: block;
 }
 body {
+	background-color:black;
+	color:${(props) => props.theme.dark.color};
 	line-height: 1;
 }
 ol, ul {

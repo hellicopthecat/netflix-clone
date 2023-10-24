@@ -5,15 +5,20 @@ import {ThemeProvider} from "styled-components";
 import {GlobalStyle, themeSchema} from "./style/theme";
 import {RouterProvider} from "react-router-dom";
 import {router} from "./router";
+import {QueryClientProvider, QueryClient} from "react-query";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+const client = new QueryClient();
+
 root.render(
   <ThemeProvider theme={themeSchema}>
     <React.StrictMode>
-      <GlobalStyle />
-      <RouterProvider router={router} />
+      <QueryClientProvider client={client}>
+        <GlobalStyle />
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </React.StrictMode>
   </ThemeProvider>
 );
