@@ -1,4 +1,4 @@
-import {Link, NavLink, useMatch} from "react-router-dom";
+import {Link, NavLink, useMatch, useNavigate} from "react-router-dom";
 import styled from "styled-components";
 import {
   motion,
@@ -7,6 +7,7 @@ import {
   useScroll,
 } from "framer-motion";
 import {useState} from "react";
+import {useForm} from "react-hook-form";
 
 const Nav = styled(motion.nav)`
   position: fixed;
@@ -17,6 +18,7 @@ const Nav = styled(motion.nav)`
   width: 100%;
   height: 80px;
   font-size: 12px;
+  z-index: 99;
 `;
 const Col = styled.div`
   display: flex;
@@ -44,7 +46,7 @@ const Item = styled.li`
   position: relative;
   z-index: 99;
 `;
-const Search = styled.button`
+const Search = styled.form`
   position: relative;
   right: 70px;
   display: flex;
@@ -61,6 +63,7 @@ const Search = styled.button`
 `;
 const InputSearch = styled(motion.input)`
   /* 변화과 시작하는 위치를 의미 */
+  border: 1px solid white;
   transform-origin: right;
   position: absolute;
   left: -150px;
@@ -91,17 +94,21 @@ const logoVariants = {
     fillOpacity: 1,
   },
   active: {
-    fillOpacity: [0, 1, 0],
+    fillOpacity: [0, 0.5, 0],
     transition: {
       repeat: Infinity,
+      duration: 0.3,
     },
   },
 };
 const navVariant = {
   top: {backgroundColor: "rgba(0,0,0,1)"},
-  scroll: {backgroundColor: "rgba(0,0,0,0.0)"},
+  scroll: {backgroundColor: "rgba(0,0,0,0.5)"},
 };
 
+interface IForm {
+  keyword: string;
+}
 export default function Header() {
   const [openSearch, setOpenSearch] = useState(false);
   const homeRoute = useMatch("/");
@@ -109,6 +116,8 @@ export default function Header() {
   const inputAnimation = useAnimation();
   const navAnimation = useAnimation();
   const {scrollY} = useScroll();
+  const {register, handleSubmit} = useForm<IForm>();
+  const navigate = useNavigate();
   const searchOpen = () => {
     if (openSearch) {
       inputAnimation.start({
@@ -129,14 +138,17 @@ export default function Header() {
       navAnimation.start("top");
     }
   });
+  const onValid = (data: IForm) => {
+    navigate(`/search?keyword=${data.keyword}`);
+  };
   return (
     <Nav variants={navVariant} initial="top" animate={navAnimation}>
       <Col>
         <Link to="/">
           <Logo
             variants={logoVariants}
-            whileHover="active"
             initial="normal"
+            whileHover="active"
             xmlns="http://www.w3.org/2000/svg"
             width="1024"
             height="276.742"
@@ -162,11 +174,11 @@ export default function Header() {
         </Items>
       </Col>
       <Col>
-        <Search>
+        <Search onSubmit={handleSubmit(onValid)}>
           <motion.svg
             onClick={searchOpen}
             transition={{type: "linear"}}
-            animate={{x: openSearch ? "-200px" : 0}}
+            animate={{x: openSearch ? "-190px" : 0}}
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -179,6 +191,7 @@ export default function Header() {
             ></path>
           </motion.svg>
           <InputSearch
+            {...register("keyword", {required: true, minLength: 2})}
             initial={{scaleX: 0}}
             animate={inputAnimation}
             transition={{type: "linear"}}
